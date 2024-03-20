@@ -55,12 +55,14 @@ class SURFMNetLoss(nn.Module):
 
         losses = dict()
         # Bijectivity penalty
+        # λbij*Lbij 
         if self.w_bij > 0:
             bijectivity_loss = criterion(torch.bmm(C12, C21), eye_batch) + criterion(torch.bmm(C21, C12), eye_batch)
             bijectivity_loss *= self.w_bij
             losses['l_bij'] = bijectivity_loss
 
         # Orthogonality penalty
+        # λorth*Lorth
         if self.w_orth > 0:
             orthogonality_loss = criterion(torch.bmm(C12.transpose(1, 2), C12), eye_batch) + \
                                  criterion(torch.bmm(C21.transpose(1, 2), C21), eye_batch)
