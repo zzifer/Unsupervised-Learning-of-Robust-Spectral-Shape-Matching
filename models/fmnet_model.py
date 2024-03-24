@@ -39,6 +39,7 @@ class FMNetModel(BaseModel):
         Pxy, Pyx = self.compute_permutation_matrix(feat_x, feat_y, bidirectional=True)
 
         # compute C
+        # 这个应该是论文中𝐿couple中的𝜙†N ΠNM 𝜙M这项
         Cxy_est = torch.bmm(evecs_trans_y, torch.bmm(Pyx, evecs_x))
 
         self.loss_metrics['l_align'] = self.losses['align_loss'](Cxy, Cxy_est)
