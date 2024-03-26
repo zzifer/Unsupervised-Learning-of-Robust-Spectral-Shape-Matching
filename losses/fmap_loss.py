@@ -27,9 +27,9 @@ class SURFMNetLoss(nn.Module):
         Init SURFMNetLoss
 
         Args:
-            w_bij (float, optional): Bijectivity penalty weight. Default 1e3.
-            w_orth (float, optional): Orthogonality penalty weight. Default 1e3.
-            w_lap (float, optional): Laplacian commutativity penalty weight. Default 1.0.
+            w_bij (float, optional): Bijectivity(双射性) penalty weight. Default 1e3.
+            w_orth (float, optional): Orthogonality(正交性) penalty weight. Default 1e3.
+            w_lap (float, optional): Laplacian commutativity(拉普拉斯交换性) penalty weight. Default 1.0.
         """
         super(SURFMNetLoss, self).__init__()
         assert w_bij >= 0 and w_orth >= 0 and w_lap >= 0
@@ -50,7 +50,9 @@ class SURFMNetLoss(nn.Module):
             evals_2 (torch.Tensor): eigenvalues of shape 2. Shape [N, K]
         """
         criterion = SquaredFrobeniusLoss()
+        # 创建单位矩阵，其大小由 C12 的维度决定
         eye = torch.eye(C12.shape[1], C12.shape[2], device=C12.device).unsqueeze(0)
+        # torch.repeat_interleave 重复单位矩阵来匹配 C12 的批次大小
         eye_batch = torch.repeat_interleave(eye, repeats=C12.shape[0], dim=0)
 
         losses = dict()
@@ -98,10 +100,12 @@ class PartialFmapsLoss(nn.Module):
     def forward(self, C_fp, C_pf, evals_full, evals_partial):
         assert C_fp.shape[0] == 1, 'Currently, only support batch size = 1'
         criterion = SquaredFrobeniusLoss()
+        # 将输入的张量调整为单样本模式
         C_fp, C_pf = C_fp[0], C_pf[0]
         evals_full, evals_partial = evals_full[0], evals_partial[0]
 
         # compute area ratio between full shape and partial shape r
+        # 计算完整形状和部分形状之间的面积比率，并创建一个对应的单位矩阵
         r = min((evals_partial < evals_full.max()).sum(), C_fp.shape[0] - 1)
         eye = torch.zeros_like(C_fp)
         eye[torch.arange(0, r + 1), torch.arange(0, r + 1)] = 1.0
