@@ -23,7 +23,9 @@ class EnlargedSampler(Sampler):
         self.num_replicas = num_replicas
         self.rank = rank
         self.epoch = 0
+        # 计算每个进程应采样的数据数量
         self.num_samples = math.ceil(len(self.dataset) * ratio / self.num_replicas)
+        # 计算整个扩大后的数据集的总大小
         self.total_size = self.num_samples * self.num_replicas
 
     def __iter__(self):
