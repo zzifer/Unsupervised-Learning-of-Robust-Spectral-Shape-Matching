@@ -44,7 +44,7 @@ class SingleShapeDataset(Dataset):
         Single Shape Dataset
 
         Args:
-            data_root (str): Data root.
+            data_root (str): Data root.    such as :data/FAUST_r
             return_evecs (bool, optional): Indicate whether return eigenfunctions and eigenvalues. Default True.
             return_faces (bool, optional): Indicate whether return faces. Default True.
             num_evecs (int, optional): Number of eigenfunctions and eigenvalues to return. Default 120.
@@ -82,6 +82,7 @@ class SingleShapeDataset(Dataset):
         # check the data path contains .off files
         off_path = os.path.join(self.data_root, 'off')
         assert os.path.isdir(off_path), f'Invalid path {off_path} not containing .off files'
+        # self.off_files:["data/FAUST_r\\off\\tr_reg_000.off", ...]
         self.off_files = sort_list(glob(f'{off_path}/*.off'))
 
         # check the data path contains .vts files
@@ -100,7 +101,9 @@ class SingleShapeDataset(Dataset):
         item = dict()
 
         # get shape name
+        # off_file: "data/FAUST_r\\off\\tr_reg_058.off"
         off_file = self.off_files[index]
+        # basename: "tr_reg_058"
         basename = os.path.splitext(os.path.basename(off_file))[0]
         item['name'] = basename
 
@@ -112,6 +115,7 @@ class SingleShapeDataset(Dataset):
 
         # get eigenfunctions/eigenvalues
         if self.return_evecs:
+            # cache_dir: data/FAUST_r\\diffusion
             item = get_spectral_ops(item, num_evecs=self.num_evecs, cache_dir=os.path.join(self.data_root, 'diffusion'))
 
         # get geodesic distance matrix
