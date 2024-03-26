@@ -668,6 +668,7 @@ def get_operators(verts, faces, k=120, normals=None,
         i_cache = 0
         while True:
             # From the name of the file to check
+            # sercha_path: 'data/FAUST_r\\diffusion\\...4f3_0.npz'
             search_path = osp.join(cache_dir, hash_key_str+'_'+str(i_cache)+'.npz')
 
             try:
