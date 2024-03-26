@@ -140,6 +140,7 @@ def build_dataloader(dataset, dataset_opt, phase, num_gpu=1, dist=False, sampler
     return torch.utils.data.DataLoader(**dataloader_args)
 
 
+# 用于为数据加载器的工作进程（worker）设置随机种子，应该是为了确保数据加载的可复现性
 def worker_init_fn(worker_id, num_workers, rank, seed):
     # Set the worker seed to num_workers * rank + worker_id + seed
     worker_seed = num_workers * rank + worker_id + seed
