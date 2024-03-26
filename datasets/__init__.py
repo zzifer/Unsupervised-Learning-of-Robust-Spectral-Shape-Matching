@@ -113,6 +113,7 @@ def build_dataloader(dataset, dataset_opt, phase, num_gpu=1, dist=False, sampler
             denominator = 1 if num_gpu == 0 else num_gpu
             batch_size = dataset_opt['batch_size']
             assert batch_size % denominator == 0, f'Batch size: {batch_size} must be divisible by {denominator}.'
+            # 这里是断言batch_size 能否被gpu数量整除，所以下次试试batch_size和num_gpu都设置为2试试
             batch_size //= denominator
             num_workers = dataset_opt['num_worker']
         else:  # non-distributed training
